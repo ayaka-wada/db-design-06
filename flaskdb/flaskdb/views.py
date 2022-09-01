@@ -39,6 +39,10 @@ def initdb():
     
     admin = User(username="admin", password="password")
     user = User(username="user", password="password")
+    ayaka = S_User(username="2022040", password="password")
+    kanako = S_User(username="2022068", password="password")
+    ryosuke = S_User(username="2022035", password="password")
+
     db.session.add(admin)
     db.session.add(user)
     db.session.commit()
