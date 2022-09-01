@@ -25,7 +25,7 @@
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         {% if not "username" in session %}
-        <li><a href="{{ url_for('app.login') }}">Login</a></li>
+        <li><a href="{{ url_for('app.login_student">Login_student</a></li>
         {% else %}
         <li><a href="{{ url_for('app.additem') }}">Add Item</a></li>
         <li><a href="{{ url_for('app.searchitem') }}">Search Item</a></li>
@@ -39,7 +39,7 @@
 
 {% block content %}
 <div class="container">
-  <div class="page-header"><h1>Login</h1></div>
+  <div class="page-header"><h1>Login_student</h1></div>
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -54,7 +54,7 @@
       {% endfor %}
     {% endfor %}
   {% endif %}
-  <form action="{{ url_for('app.login') }}" method="POST" novalidate class="mb-10">
+  <form action="{{ url_for('app.login_student') }}" method="POST" novalidate class="mb-10">
     <div class="form-group">
       <label for="username">{{ form.username.label }}</label>
       {{ form.username(type="text", id="username", class="form-control", placeholder="Enter your username") }}

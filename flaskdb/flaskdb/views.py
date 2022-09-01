@@ -7,7 +7,7 @@ import datetime
 import pickle
 
 from flaskdb import apps, db, da
-from flaskdb.models import User, Item
+from flaskdb.models import User, Item, S_User, T_User
 from flaskdb.forms import LoginForm, AddItemForm, SearchItemForm
 
 app = Blueprint("app", __name__)
@@ -45,17 +45,20 @@ def initdb():
 
     db.session.add(admin)
     db.session.add(user)
+    db.session.add(ayaka)
+    db.session.add(kanako)
+    db.session.add(ryosuke)
     db.session.commit()
     return "initidb() method was executed. "
 
 @app.route("/login_student", methods=["GET", "POST"])
-def login():
+def login_student():
     form = LoginForm()
     if form.validate_on_submit():
         print(form.username.data)
         print(form.password.data)
 
-        user = User.query.filter_by(username=form.username.data, password=form.password.data).first()
+        user = S_User.query.filter_by(username=form.username.data, password=form.password.data).first()
 
         if user is None or user.password != form.password.data:
             flash("Username or Password is incorrect.", "danger")
@@ -67,7 +70,7 @@ def login():
     return render_template("login_student.html", form=form)
 
 @app.route("/login_teacher", methods=["GET", "POST"])
-def login():
+def login_teacher():
     form = LoginForm()
     if form.validate_on_submit():
         print(form.username.data)
