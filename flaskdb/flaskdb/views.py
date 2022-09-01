@@ -44,7 +44,7 @@ def initdb():
     db.session.commit()
     return "initidb() method was executed. "
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login_student", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -60,7 +60,25 @@ def login():
         session["username"] = user.username
         return redirect(url_for("app.index"))
 
-    return render_template("login.html", form=form)
+    return render_template("login_student.html", form=form)
+
+@app.route("/login_teacher", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        print(form.username.data)
+        print(form.password.data)
+
+        user = User.query.filter_by(username=form.username.data, password=form.password.data).first()
+
+        if user is None or user.password != form.password.data:
+            flash("Username or Password is incorrect.", "danger")
+            return redirect(url_for("app.login"))
+
+        session["username"] = user.username
+        return redirect(url_for("app.index"))
+
+    return render_template("login_teacher.html", form=form)
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
