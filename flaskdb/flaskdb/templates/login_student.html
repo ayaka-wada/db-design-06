@@ -25,7 +25,8 @@
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         {% if not "username" in session %}
-        <li><a href="{{ url_for('app.login_student">Login_student</a></li>
+        <li><a href="{{ url_for('app.login_student')}}">Login_student</a></li>
+        <li><a href="{{ url_for('app.login_teacher')}}">Login_teacher</a></li>
         {% else %}
         <li><a href="{{ url_for('app.additem') }}">Add Item</a></li>
         <li><a href="{{ url_for('app.searchitem') }}">Search Item</a></li>

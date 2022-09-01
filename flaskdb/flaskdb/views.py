@@ -7,7 +7,7 @@ import datetime
 import pickle
 
 from flaskdb import apps, db, da
-from flaskdb.models import User, Item, S_User, T_User
+from flaskdb.models import User, Item, S_User, T_User, Classes
 from flaskdb.forms import LoginForm, AddItemForm, SearchItemForm
 
 app = Blueprint("app", __name__)
@@ -39,15 +39,33 @@ def initdb():
     
     admin = User(username="admin", password="password")
     user = User(username="user", password="password")
+
+    # 生徒のDB
     ayaka = S_User(username="2022040", password="password")
     kanako = S_User(username="2022068", password="password")
     ryosuke = S_User(username="2022035", password="password")
 
+    #先生のDB
+    hayashi = T_User(username="hayashi", password="password")
+    nakanishi = T_User(username="nakanishi", password="password")
+
+    #授業のDB
+    db_design = Classes(classname ="データベースデザイン", t_id =1, start_time = "09:00", end_time = "12:30",url ="index")
+
+
+
     db.session.add(admin)
     db.session.add(user)
+
     db.session.add(ayaka)
     db.session.add(kanako)
     db.session.add(ryosuke)
+
+    db.session.add(hayashi)
+    db.session.add(nakanishi)
+
+    db.session.add(db_design)
+
     db.session.commit()
     return "initidb() method was executed. "
 
@@ -62,7 +80,7 @@ def login_student():
 
         if user is None or user.password != form.password.data:
             flash("Username or Password is incorrect.", "danger")
-            return redirect(url_for("app.login"))
+            return redirect(url_for("app.login_student"))
 
         session["username"] = user.username
         return redirect(url_for("app.index"))
@@ -76,14 +94,15 @@ def login_teacher():
         print(form.username.data)
         print(form.password.data)
 
-        user = User.query.filter_by(username=form.username.data, password=form.password.data).first()
+        user = T_User.query.filter_by(username=form.username.data, password=form.password.data).first()
 
         if user is None or user.password != form.password.data:
             flash("Username or Password is incorrect.", "danger")
-            return redirect(url_for("app.login"))
+            return redirect(url_for("app.login_teacher"))
 
         session["username"] = user.username
-        return redirect(url_for("app.index"))
+        session["t_id"] = user.t_id
+        return redirect(url_for("app.classes"))
 
     return render_template("login_teacher.html", form=form)
 
@@ -93,6 +112,23 @@ def logout():
     session.clear()
     flash("You have been logged out.", "info")
     return redirect(url_for("app.index"))
+
+@app.route("/classes", methods=["GET", "POST"])
+def classes():
+    # classes_list = Classes.query.all()
+    # return render_template("classes.html")
+    if form.validate_on_submit():
+        classes = Classes()
+        form.copy_to(Classes)
+        user = T_User.query.filter_by(username=session["username"]).first()
+        classes.t_id = user.t_id
+        da.select_classes(classes)
+
+        flash("An item was added.", "info")
+        return redirect(url_for("app.classes"))
+
+    classes_list = da.search_items()
+    return render_template("classes.html", form=form, classes_list=classes_list)
 
 @app.route("/additem", methods=["GET", "POST"])
 def additem():
@@ -120,7 +156,7 @@ def additem():
 def searchitem():
     if not "username" in session:
         flash("Log in is required.", "danger")
-        return redirect(url_for("app.login"))
+        return redirect(url_for("app.login_teacher"))
 
     form = SearchItemForm()
 

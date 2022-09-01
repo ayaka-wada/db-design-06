@@ -4,7 +4,7 @@ Copyright (C) 2022 Yasuhiro Hayashi
 """
 from psycopg2 import sql, connect, ProgrammingError
 import flaskdb.var as v
-from flaskdb.models import Item
+from flaskdb.models import Item, Classes
 
 class DataAccess:
 
@@ -86,3 +86,21 @@ class DataAccess:
             ])
         )
         self.execute(query, autocommit=True)
+
+    def select_classes(self, classes):
+        query = sql.SQL("""
+                    SELECT * FROM \"classes\" WHERE \"classes.t_id = {{ session["t_id"] }}\"
+                """)
+        self.show_sql(query)
+        results = self.execute(query, autocommit=True)
+        classes_list = []
+        for r in results:
+            classes = Classes()
+            classes.classes_id = r[0]
+            classes.classname= r[1]
+            classes.t_id = r[2]
+            classes.start_time = r[3]
+            classes.end_time = r[4]
+            classes.url = r[5]
+            classes_list.append(classes)
+        return classes_list

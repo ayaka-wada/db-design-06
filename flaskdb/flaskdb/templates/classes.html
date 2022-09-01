@@ -3,7 +3,7 @@
 {% block head %}
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>flaskdb | Index</title>
+  <title>flaskdb | Classes</title>
   <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
   <link href="/static/css/flaskdb.css" rel="stylesheet">
   <!-- A Sample Web-DB Application for DB-DESIGN lecture -->
@@ -20,9 +20,9 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{{ url_for('app.index') }}">flaskdb</a>
+      <a class="navbar-brand" href="{{ url_for('app.classes') }}">flaskdb</a>
     </div>
-    <div class="navbar-collapse collapse"> 
+    <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         {% if not "username" in session %}
         <li><a href="{{ url_for('app.login_student') }}">Login_student</a></li>
@@ -40,7 +40,7 @@
 
 {% block content %}
 <div class="container">
-  <div class="page-header"><h1>Index</h1></div>
+  <div class="page-header"><h1>Classes</h1></div>
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -57,6 +57,32 @@
   {% endif %}
   {% if "username" in session %}
   <p>Welcome, {{ session["username"] }}!</p>
+  {% endif %}
+  {% if classes_list %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">NAME</th>
+        <th scope="col">Teacher ID</th>
+        <th scope="col">Start Time</th>
+        <th scope="col">End Time</th>
+        <th scope="col">Url</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for s in classes_list %}
+        <tr>
+          <th scope="row">{{ s.classes_id }}</th>
+          <td>{{ s.classname }}</td>
+          <td>{{ s.t_id }}</td>
+          <td>{{ s.start_time }}</td>
+          <td>{{ s.end_time }}</td>
+          <td>{{ s.url }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+  </table>
   {% endif %}
 </div>
 {% endblock %}
