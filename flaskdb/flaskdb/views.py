@@ -54,6 +54,9 @@ def initdb():
     mmkb = Classes(classname ="マルチメディア知識ベース", t_id =1, start_time = "08:50", end_time = "12:20",url ="index")
     ai_creation = Classes(classname ="専門コース演習II", t_id =2, start_time = "13:10", end_time = "16:40",url ="index")
 
+    #履修者DB
+
+
 
 
     db.session.add(admin)
@@ -199,3 +202,12 @@ def nativesql():
 
     itemlist = da.search_items()
     return render_template("additem.html", form=form, itemlist=itemlist)
+
+@app.route('/management')
+def get_request():
+    contents = request.args.get('id', '')
+    management_list = Classes.query.filter_by(classes_id=contents).first()
+
+
+    return render_template("management.html", management_list=management_list)
+
