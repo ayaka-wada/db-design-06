@@ -51,6 +51,8 @@ def initdb():
 
     #授業のDB
     db_design = Classes(classname ="データベースデザイン", t_id =1, start_time = "09:00", end_time = "12:30",url ="index")
+    mmkb = Classes(classname ="マルチメディア知識ベース", t_id =1, start_time = "08:50", end_time = "12:20",url ="index")
+    ai_creation = Classes(classname ="専門コース演習II", t_id =2, start_time = "13:10", end_time = "16:40",url ="index")
 
 
 
@@ -65,6 +67,8 @@ def initdb():
     db.session.add(nakanishi)
 
     db.session.add(db_design)
+    db.session.add(ai_creation)
+    db.session.add(mmkb)
 
     db.session.commit()
     return "initidb() method was executed. "
@@ -115,20 +119,15 @@ def logout():
 
 @app.route("/classes", methods=["GET", "POST"])
 def classes():
-    # classes_list = Classes.query.all()
-    # return render_template("classes.html")
-    if form.validate_on_submit():
-        classes = Classes()
-        form.copy_to(Classes)
-        user = T_User.query.filter_by(username=session["username"]).first()
-        classes.t_id = user.t_id
-        da.select_classes(classes)
+    if not "username" in session:
+        flash("Log in is required.", "danger")
+        return redirect(url_for("app.login_teacher"))
 
-        flash("An item was added.", "info")
-        return redirect(url_for("app.classes"))
+    classes_list = T_User.query.filter_by(username=session["username"]).first()
+    teacher =  classes_list.t_id
+    classes_list = Classes.query.filter_by(t_id= teacher)
 
-    classes_list = da.search_items()
-    return render_template("classes.html", form=form, classes_list=classes_list)
+    return render_template("classes.html", classes_list=classes_list)
 
 @app.route("/additem", methods=["GET", "POST"])
 def additem():

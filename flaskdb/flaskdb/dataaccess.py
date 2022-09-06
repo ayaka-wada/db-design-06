@@ -87,9 +87,9 @@ class DataAccess:
         )
         self.execute(query, autocommit=True)
 
-    def select_classes(self, classes):
+    def select_classes(self, t_id):
         query = sql.SQL("""
-                    SELECT * FROM \"classes\" WHERE \"classes.t_id = {{ session["t_id"] }}\"
+                    SELECT * FROM \"classes\" WHERE \"classes.t_id\" = t_id
                 """)
         self.show_sql(query)
         results = self.execute(query, autocommit=True)

@@ -74,7 +74,7 @@
     {% for s in classes_list %}
         <tr>
           <th scope="row">{{ s.classes_id }}</th>
-          <td>{{ s.classname }}</td>
+          <td><a href="index.html?id={{ s.classes_id }}">{{ s.classname }}</a></td>
           <td>{{ s.t_id }}</td>
           <td>{{ s.start_time }}</td>
           <td>{{ s.end_time }}</td>
