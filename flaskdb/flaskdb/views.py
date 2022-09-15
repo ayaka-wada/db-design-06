@@ -4,6 +4,7 @@ A Sample Web-DB Application for DB-DESIGN lecture
 Copyright (C) 2022 Yasuhiro Hayashi
 """
 from flask import Blueprint, request, session, render_template, redirect, flash, url_for
+from sqlalchemy import between , and_
 import datetime
 import pickle
 import sys
@@ -247,11 +248,16 @@ def get_request():
     print(str("ここだよ") + str((contents)))
     # print(str("ここだよ2") + str(type(students)))
     management_list = Classes.query.filter_by(classes_id=contents).first()
-    count = da.qr_time(contents)
-    check = da.attend_check()
-    print("ここここここここ",len(count))
+    count = qr_start.query.filter_by(classes_id=contents,id=qr_stop.id).all()
+    count = len(count)
+    # check = attend.query.filter_by(classes_id=contents).all()
+    check = attend.query.filter(between(attend.date_time, qr_start.qr_start_time ,qr_stop.qr_end_time),and_(qr_start.id == qr_stop.id), attend.classes_id == contents).all()
+    print("ここここここここ")
+    print(check)
+    # print(len(count))
 
-    return render_template("management.html", management_list=management_list, students=students, contents=contents, count=count, check=check)
+
+    return render_template("management.html", management_list=management_list, students=students, contents=contents, count=count,check=check)
 
 @app.route('/QR_start',methods=['GET', 'POST'])
 def qr_start_():
