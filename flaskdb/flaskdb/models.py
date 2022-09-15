@@ -4,6 +4,7 @@ Copyright (C) 2022 Yasuhiro Hayashi
 """
 from flaskdb import db
 
+
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
@@ -18,6 +19,7 @@ class S_User(db.Model):
     s_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
+    management = db.Column(db.ARRAY(db.Integer))
 
     def __repr__(self):
         return "<S_User %r>" % self.id
@@ -52,3 +54,34 @@ class Classes(db.Model):
 
     def __repr__(self):
         return "<Classes %r>" % self.id
+
+class qr_start(db.Model):
+    __tablename__ = "qr_start"
+    id = db.Column(db.Integer, primary_key=True)
+    classes_id = db.Column(db.Integer, nullable=False)
+    qr_start_time = db.Column(db.String(64), nullable=False)
+
+    def __repr__(self):
+        return "<qr_start %r>" % self.id
+
+class qr_stop(db.Model):
+    __tablename__ = "qr_stop"
+    id = db.Column(db.Integer, primary_key=True)
+    classes_id = db.Column(db.Integer, nullable=False)
+    qr_end_time = db.Column(db.String(64), nullable=False)
+
+    def __repr__(self):
+        return "<qr_stop %r>" % self.id
+
+class attend(db.Model):
+    __tablename__ = "attend"
+    id = db.Column(db.Integer, primary_key=True)
+    students_id = db.Column(db.Integer, nullable=False)
+    date_time = db.Column(db.String(64), nullable=False)
+    classes_id = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return "<attend %r>" % self.id
+
+
+

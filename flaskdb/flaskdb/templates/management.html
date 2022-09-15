@@ -27,8 +27,7 @@
         {% if not "username" in session %}
         <li><a href="{{ url_for('app.login_teacher') }}">Login_teacher</a></li>
         {% else %}
-        <li><a href="{{ url_for('app.additem') }}">Add Item</a></li>
-        <li><a href="{{ url_for('app.searchitem') }}">Search Item</a></li>
+        <li><a href="{{ url_for('app.classes') }}">授業一覧</a></li>
         <li><a href="{{ url_for('app.logout') }}">Logout</a></li>
         {% endif %}
       </ul>
@@ -39,7 +38,9 @@
 
 {% block content %}
 <div class="container">
-  <div class="page-header"><h1>Management</h1></div>
+    {% if management_list %}
+      <h1 scope="row">{{ management_list.classname }}</h1>
+    {% endif %}
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -54,12 +55,39 @@
       {% endfor %}
     {% endfor %}
   {% endif %}
-
   {% if management_list %}
-      <p scope="row">{{ management_list.classname }}</p>
+    <a id="link" href="QR_start?id=jquery">表示</a>
+    <table class="table">
+    <thead>
+        <tr>
+            <th scope="col">学籍番号</th>
+            <th scope="col">第1回目</th>
+            <th scope="col">第2回目</th>
+            <th scope="col">第3回目</th>
+            <th scope="col">第4回目</th>
+            <th scope="col">第5回目</th>
+            <th scope="col">第6回目</th>
+            <th scope="col">第7回目</th>
+        </tr>
+    </thead>
 
-
+      {% for s in students %}
+        <tr>
+          <th scope="row">{{ s[0] }}</th>
+{#          {% for i in range(6) %}#}
+{#              {% if s[0] in check.students_id  %}#}
+{#                  <td>◯</td>#}
+{##}
+{#              <td>{{ s.start_time }}</td>#}
+{#              <td>{{ s.end_time }}</td>#}
+{#              <td>{{ s.url }}</td>#}
+{#              {% endif %}#}
+{#          {% endfor %}#}
+        </tr>
+    {% endfor %}
+    </table>
   {% endif %}
+
 </div>
 {% endblock %}
 
@@ -67,4 +95,17 @@
 <script src="{{ bootstrap_find_resource('jquery.js', cdn='jquery') }}"></script>
 <script src="{{ bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap') }}"></script>
 <script src="/static/js/flaskdb.js"></script>
+    <script>
+        var url = new URL(window.location.href);
+        var params = url.searchParams;
+        var contents = params.get('id');
+       　//a要素を取得する
+        var link = document.getElementById('link');
+        //a要素のhref属性の値を取得する
+        var oldHref = link.getAttribute('href');
+        //replaceでhref属性の一部（jquery）を新しい値（javascript）に置き換える
+        var newHref = oldHref.replace('jquery',contents);
+        //置き換えた値をa要素のhref属性に設定する
+        link.setAttribute('href', newHref);
+    </script>
 {% endblock %}

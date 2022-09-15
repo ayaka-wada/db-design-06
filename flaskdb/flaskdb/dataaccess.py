@@ -6,6 +6,7 @@ from psycopg2 import sql, connect, ProgrammingError
 import flaskdb.var as v
 from flaskdb.models import Item, Classes
 
+
 class DataAccess:
 
     # Constractor called when this class is used. 
@@ -87,20 +88,45 @@ class DataAccess:
         )
         self.execute(query, autocommit=True)
 
-    def select_classes(self, t_id):
+    def management(self, contents):
         query = sql.SQL("""
-                    SELECT * FROM \"classes\" WHERE \"classes.t_id\" = t_id
-                """)
+                    SELECT \"username\" FROM \"s_users\" WHERE {contents} = any(\"management\");
+                """).format(
+            contents = sql.Literal(contents)
+        )
+
         self.show_sql(query)
         results = self.execute(query, autocommit=True)
-        classes_list = []
-        for r in results:
-            classes = Classes()
-            classes.classes_id = r[0]
-            classes.classname= r[1]
-            classes.t_id = r[2]
-            classes.start_time = r[3]
-            classes.end_time = r[4]
-            classes.url = r[5]
-            classes_list.append(classes)
-        return classes_list
+
+        return results
+
+    def qr_time(self, contents):
+        query = sql.SQL("""
+                    SELECT \"qr_start.id\",\"qr_start.classes_id\", \"qr_start.qr_start_time\", \"qr_stop.qr_end_time\" FROM \"qr_start\", \"qr_stop\" WHERE \"qr_start.id = qr_stop.id\" AND \"qr_start.classes_id\" = {contents} ;
+                """).format(
+            contents = sql.Literal(contents)
+        )
+
+        self.show_sql(query)
+        results = self.execute(query, autocommit=True)
+
+        return results
+
+    def attend_check(self):
+        query = sql.SQL("""
+                    SELECT \"qr_start.id\", \"qr_start.classes_id\", \"attend.students_id\", \"attend.date_time\", \"qr_start.qr_start_time\", \"qr_stop.qr_end_time\" FROM \"qr_start\", \"qr_stop\", \"attend\" WHERE \"attend.date_time\" BETWEEN \"qr_start.qr_start_time\" AND \"qr_stop.qr_end_time\" AND \"qr_start.classes_id = attend.classes_id\" AND \"qr_start.id = qr_stop.id\" ;
+                """).format(
+            # contents = sql.Literal(contents)
+        )
+
+        self.show_sql(query)
+        results = self.execute(query, autocommit=True)
+
+        return results
+
+
+# SELECT qr_start.id, qr_start.classes_id, qr_start.qr_start_time, qr_stop.qr_end_time
+#                     FROM qr_start, qr_stop
+#                     WHERE qr_start.id = qr_stop.id
+#                     AND  qr_start.classes_id  =1
+#                      ;

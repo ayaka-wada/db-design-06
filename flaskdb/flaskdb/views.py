@@ -1,3 +1,4 @@
+#!/Users/ayaka/Development/ai-algo/.venv/bin/python3
 """
 A Sample Web-DB Application for DB-DESIGN lecture
 Copyright (C) 2022 Yasuhiro Hayashi
@@ -5,12 +6,12 @@ Copyright (C) 2022 Yasuhiro Hayashi
 from flask import Blueprint, request, session, render_template, redirect, flash, url_for
 import datetime
 import pickle
-
+import sys
 from flaskdb import apps, db, da
-from flaskdb.models import User, Item, S_User, T_User, Classes
-from flaskdb.forms import LoginForm, AddItemForm, SearchItemForm
+from flaskdb.models import User, Item, S_User, T_User, Classes, attend, qr_start, qr_stop
+from flaskdb.forms import LoginForm, AddItemForm, SearchItemForm, LoginForm2,QR_Form
 
-app = Blueprint("app", __name__)
+app = Blueprint("app", __name__,static_folder='./static/image')
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -41,9 +42,9 @@ def initdb():
     user = User(username="user", password="password")
 
     # 生徒のDB
-    ayaka = S_User(username="2022040", password="password")
-    kanako = S_User(username="2022068", password="password")
-    ryosuke = S_User(username="2022035", password="password")
+    ayaka = S_User(username="2022040", password="password", management=[1,2,3])
+    kanako = S_User(username="2022068", password="password", management=[2])
+    ryosuke = S_User(username="2022035", password="password", management=[1,3])
 
     #先生のDB
     hayashi = T_User(username="hayashi", password="password")
@@ -53,9 +54,6 @@ def initdb():
     db_design = Classes(classname ="データベースデザイン", t_id =1, start_time = "09:00", end_time = "12:30",url ="index")
     mmkb = Classes(classname ="マルチメディア知識ベース", t_id =1, start_time = "08:50", end_time = "12:20",url ="index")
     ai_creation = Classes(classname ="専門コース演習II", t_id =2, start_time = "13:10", end_time = "16:40",url ="index")
-
-    #履修者DB
-
 
 
 
@@ -78,25 +76,63 @@ def initdb():
 
 @app.route("/login_student", methods=["GET", "POST"])
 def login_student():
+    contents = request.args.get('id')
+
     form = LoginForm()
     if form.validate_on_submit():
         print(form.username.data)
         print(form.password.data)
 
         user = S_User.query.filter_by(username=form.username.data, password=form.password.data).first()
+        management = Classes.query.filter_by(classes_id=form.contents.data).first()
 
         if user is None or user.password != form.password.data:
             flash("Username or Password is incorrect.", "danger")
             return redirect(url_for("app.login_student"))
 
         session["username"] = user.username
-        return redirect(url_for("app.index"))
+        students = da.management(form.contents.data)
 
-    return render_template("login_student.html", form=form)
+        session.permanent = True
+
+        #もしs_usersのmanagementにmanagement.classes_idがあったら出席
+        students_list=[]
+        for i in students:
+            students_list.append(i[0])
+        if session["username"] in students_list:
+            session["contents"] = management.classname
+            attend_students = attend(students_id=session["username"], date_time=str(datetime.datetime.now()), classes_id=management.classes_id)
+
+            db.session.add(attend_students)
+            db.session.commit()
+        else:
+            flash("履修してないよん", "danger")
+            return redirect(url_for("app.login_student"))
+
+        return redirect(url_for("app.index2"))
+    return render_template("login_student.html", form=form,contents=contents)
+
+@app.route("/index2", methods=["GET", "POST"])
+def index2():
+    if not "username" in session:
+        flash("Log in is required.", "danger")
+        return redirect(url_for("app.login_student"))
+    if not "contents" in session:
+        flash("Log in is required.", "danger")
+        return redirect(url_for("app.login_student"))
+
+    # if "contents" in session:
+    #     contents = session["contents"]
+    #     # management_list = Classes.query.filter_by(classes_id=contents).first()
+    # else:
+    #     # management_list = None
+    #     contents = None
+
+    return render_template("index2.html" ,contents=session["contents"])
 
 @app.route("/login_teacher", methods=["GET", "POST"])
 def login_teacher():
-    form = LoginForm()
+    form = LoginForm2()
     if form.validate_on_submit():
         print(form.username.data)
         print(form.password.data)
@@ -127,8 +163,9 @@ def classes():
         return redirect(url_for("app.login_teacher"))
 
     classes_list = T_User.query.filter_by(username=session["username"]).first()
-    teacher =  classes_list.t_id
+    teacher = classes_list.t_id
     classes_list = Classes.query.filter_by(t_id= teacher)
+
 
     return render_template("classes.html", classes_list=classes_list)
 
@@ -203,11 +240,36 @@ def nativesql():
     itemlist = da.search_items()
     return render_template("additem.html", form=form, itemlist=itemlist)
 
-@app.route('/management')
+@app.route('/management',methods=['GET', 'POST'])
 def get_request():
-    contents = request.args.get('id', '')
+    contents = request.args.get('id')
+    students = da.management(contents)
+    print(str("ここだよ") + str((contents)))
+    # print(str("ここだよ2") + str(type(students)))
     management_list = Classes.query.filter_by(classes_id=contents).first()
+    count = da.qr_time(contents)
+    check = da.attend_check()
+    print("ここここここここ",len(count))
 
+    return render_template("management.html", management_list=management_list, students=students, contents=contents, count=count, check=check)
 
-    return render_template("management.html", management_list=management_list)
+@app.route('/QR_start',methods=['GET', 'POST'])
+def qr_start_():
+    contents = request.args.get('id')
+    start = str(datetime.datetime.now())
+    print(str("ここだよ~") + str((contents)))
+    qr_start_time = qr_start(classes_id=contents, qr_start_time=start)
+    db.session.add(qr_start_time)
+    db.session.commit()
 
+    return render_template("QR_start.html", contents=contents)
+
+@app.route('/QR_stop',methods=['GET', 'POST'])
+def qr_stop_():
+    contents = request.args.get('id')
+    stop = str(datetime.datetime.now())
+    qr_stop_time = qr_stop(classes_id=contents, qr_end_time=stop)
+    db.session.add(qr_stop_time)
+    db.session.commit()
+
+    return render_template("QR_stop.html", contents=contents)
