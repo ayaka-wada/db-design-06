@@ -72,16 +72,17 @@
     </thead>
 
     <tbody>
-    {% for s in check %}
+    {% for s in count %}
         <tr>
           <th scope="row">{{ s.id }}</th>
 {#          <td><a href="management?id={{ s.classes_id }}">{{ s.classname }}</a></td>#}
           <td>{{ s.classes_id }}</td>
           <td>{{ s.qr_start_time }}</td>
-            <td>{{ s.qr_end_time }}</td>
+          <td>{{ s.qr_end_time }}</td>
 
-          <td>{{ s.end_time }}</td>
-          <td>{{ s.url }}</td>
+
+{#          <td>{{ s.end_time }}</td>#}
+{#          <td>{{ s.url }}</td>#}
         </tr>
     {% endfor %}
 
