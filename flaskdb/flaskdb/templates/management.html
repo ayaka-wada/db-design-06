@@ -39,7 +39,7 @@
 {% block content %}
 <div class="container">
     {% if management_list %}
-      <h1 scope="row">{{ management_list.classname }}</h1>
+      <h1 scope="row">{{ management_list.classname }}</h1><br>
     {% endif %}
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -55,54 +55,38 @@
       {% endfor %}
     {% endfor %}
   {% endif %}
+
   {% if management_list %}
-    <a id="link" href="QR_start?id=jquery">表示</a>
+
+    <a id="link" href="QR_start?id=jquery">
+      <button type="button" class="btn btn-primary btn-lg btn-block">
+        出席用QRを表示
+      </button>
+    </a><br>
+
     <table class="table">
-    <thead>
-        <tr>
-            <th scope="col">学籍番号</th>
-            <th scope="col">第1回目</th>
-            <th scope="col">第2回目</th>
-            <th scope="col">第3回目</th>
-            <th scope="col">第4回目</th>
-            <th scope="col">第5回目</th>
-            <th scope="col">第6回目</th>
-            <th scope="col">第7回目</th>
-        </tr>
-    </thead>
+      <thead>
+          <tr>
+              <th scope="col" class="text-center">学籍番号</th>
+              <th scope="col" class="text-center">第1回目</th>
+              <th scope="col" class="text-center">第2回目</th>
+              <th scope="col" class="text-center">第3回目</th>
+              <th scope="col" class="text-center">第4回目</th>
+              <th scope="col" class="text-center">第5回目</th>
+              <th scope="col" class="text-center">第6回目</th>
+              <th scope="col" class="text-center">第7回目</th>
+          </tr>
+      </thead>
 
-    <tbody>
-    {% for s in count %}
-        <tr>
-          <th scope="row">{{ s.id }}</th>
-{#          <td><a href="management?id={{ s.classes_id }}">{{ s.classname }}</a></td>#}
-          <td>{{ s.classes_id }}</td>
-          <td>{{ s.qr_start_time }}</td>
-          <td>{{ s.qr_end_time }}</td>
-
-
-{#          <td>{{ s.end_time }}</td>#}
-{#          <td>{{ s.url }}</td>#}
-        </tr>
-    {% endfor %}
-
-    {{ check }}
-    </tbody>
-
-      {% for s in students %}
-        <tr>
-          <th scope="row">{{ s[0] }}</th>
-{#          {% for i in range(6) %}#}
-{#              {% if s[0] in check.students_id  %}#}
-{#                  <td>◯</td>#}
-{##}
-{#              <td>{{ s.start_time }}</td>#}
-{#              <td>{{ s.end_time }}</td>#}
-{#              <td>{{ s.url }}</td>#}
-{#              {% endif %}#}
-{#          {% endfor %}#}
-        </tr>
-    {% endfor %}
+      <tbody>
+            {% for t in marubatu_list %}
+                <tr>
+                {% for p in range(8) %}
+                <th scope="col" class="text-center">{{ t[p] }}</th>
+                {% endfor %}
+                </tr>
+            {% endfor %}
+      </tbody>
     </table>
   {% endif %}
 
@@ -117,7 +101,7 @@
         var url = new URL(window.location.href);
         var params = url.searchParams;
         var contents = params.get('id');
-       　//a要素を取得する
+        //a要素を取得する
         var link = document.getElementById('link');
         //a要素のhref属性の値を取得する
         var oldHref = link.getAttribute('href');

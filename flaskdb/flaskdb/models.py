@@ -22,7 +22,7 @@ class S_User(db.Model):
     management = db.Column(db.ARRAY(db.Integer))
 
     def __repr__(self):
-        return "<S_User %r>" % self.id
+        return "<S_User %r>" % self.s_id
 
 class T_User(db.Model):
     __tablename__ = "t_users"
@@ -31,7 +31,7 @@ class T_User(db.Model):
     password = db.Column(db.String(128), nullable=False)
 
     def __repr__(self):
-        return "<T_User %r>" % self.id
+        return "<T_User %r>" % self.t_id
 
 class Item(db.Model):
     __tablename__ = "items"
@@ -53,13 +53,14 @@ class Classes(db.Model):
     url = db.Column(db.String(128), nullable=False)
 
     def __repr__(self):
-        return "<Classes %r>" % self.id
+        return "<Classes %r>" % self.classes_id
 
 class qr_start(db.Model):
     __tablename__ = "qr_start"
     id = db.Column(db.Integer, primary_key=True)
     classes_id = db.Column(db.Integer, nullable=False)
     qr_start_time = db.Column(db.String(64), nullable=False)
+    qr_start_date = db.Column(db.String(64), nullable=False)
 
     def __repr__(self):
         return "<qr_start %r>" % self.id
@@ -79,9 +80,19 @@ class attend(db.Model):
     students_id = db.Column(db.Integer, nullable=False)
     date_time = db.Column(db.String(64), nullable=False)
     classes_id = db.Column(db.Integer, nullable=False)
-
+    
     def __repr__(self):
         return "<attend %r>" % self.id
+
+class classes_date(db.Model):
+    __tablename__ = "classes_date"
+    id = db.Column(db.Integer, primary_key=True)
+    classes_id = db.Column(db.Integer, nullable=False)
+    classes_number = db.Column(db.Integer, nullable=False)
+    date =  db.Column(db.String(64), nullable=False)
+    
+    def __repr__(self):
+        return "<classes_date %r>" % self.id
 
 
 

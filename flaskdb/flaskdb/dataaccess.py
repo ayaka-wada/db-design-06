@@ -114,7 +114,13 @@ class DataAccess:
 
     def attend_check(self):
         query = sql.SQL("""
-                    SELECT \"qr_start.id\", \"qr_start.classes_id\", \"attend.students_id\", \"attend.date_time\", \"qr_start.qr_start_time\", \"qr_stop.qr_end_time\" FROM \"qr_start\", \"qr_stop\", \"attend\" WHERE \"attend.date_time\" BETWEEN \"qr_start.qr_start_time\" AND \"qr_stop.qr_end_time\" AND \"qr_start.classes_id = attend.classes_id\" AND \"qr_start.id = qr_stop.id\" ;
+                    SELECT \"qr_start.id\", \"qr_start.classes_id\", \"attend.students_id\", \"attend.date_time\", \"qr_start.qr_start_time\", \"qr_stop.qr_end_time\" 
+                    FROM \"qr_start\", \"qr_stop\", \"attend\" 
+                    WHERE \"attend.date_time\" 
+                    BETWEEN \"qr_start.qr_start_time\" 
+                    AND \"qr_stop.qr_end_time\" 
+                    AND \"qr_start.classes_id = attend.classes_id\" 
+                    AND \"qr_start.id = qr_stop.id\" ;
                 """).format(
             # contents = sql.Literal(contents)
         )
