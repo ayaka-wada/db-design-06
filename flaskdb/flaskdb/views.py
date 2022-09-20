@@ -243,11 +243,11 @@ def get_request():
     sky = []
     for p in range(len(mikel)):
         sky.append([mikel[p][0], mikel[p][1],mikel[p][2]])
-    print("sssssssss", sky)
-    print("jjjjjj", jackson)
-    print("cccccc", class_count)
-    print("mmmmmmmm", mikel)
-    print("student", students)
+    # print("sssssssss", sky)
+    # print("jjjjjj", jackson)
+    # print("cccccc", class_count)
+    # print("mmmmmmmm", mikel)
+    # print("student", students)
 
     marubatu_list = []
     for s in students:
@@ -256,9 +256,9 @@ def get_request():
         for h in range(7):
             if (class_count.count() -1) >= h:
                 list = [i for i, l in enumerate(sky) if set([int(s[0]), class_count[h][0]]).issubset(l)]
-                print("lllllllll", list)
-                print("lllllllll", int(s[0]))
-                print("lllllllll", class_count[h][0])
+                # print("lllllllll", list)
+                # print("lllllllll", int(s[0]))
+                # print("lllllllll", class_count[h][0])
                 if not list:
                     marubatu_list_one.append("×")
                 elif jackson[h][1] == sky[list[0]][2]:
@@ -271,7 +271,7 @@ def get_request():
                 
         marubatu_list.append(marubatu_list_one)
         
-    print("mmmmmmmmmmmmmmmmm", marubatu_list)
+    # print("mmmmmmmmmmmmmmmmm", marubatu_list)
     # print("mmmmmmmmmmmmmmmmm", mikel)
     # print("mmmmmmmmmmmmmmmmm", sky)
     
@@ -299,17 +299,3 @@ def qr_stop_():
     db.session.commit()
 
     return render_template("QR_stop.html", contents=contents)
-
-
-
-# select qr_start.id,
-#                 qr_start.classes_id,
-#                 attend.students_id,
-#                 attend.date_time,
-#                 qr_start.qr_start_time,
-#                 qr_stop.qr_end_time,
-#                 qr_start.qr_start_date
-# from qr_start, attend, qr_stop
-# where qr_start.classes_id == attend.classes_id and
-#                 qr_start.id == qr_stop.id and
-#                 attend.date_time between(qr_start.qr_start_time, qr_stop.qr_end_time);
