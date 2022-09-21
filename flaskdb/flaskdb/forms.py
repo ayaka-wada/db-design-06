@@ -22,7 +22,7 @@ class LoginForm(FlaskForm):
         ],
     )
     contents = StringField(
-        "出席したいならログインしてみて?",
+        "出席確認のためログインしてください",
         validators=[
             DataRequired(message="url is wrong."),
         ],

@@ -3,7 +3,7 @@
 {% block head %}
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>flaskdb | Search Item</title>
+  <title>楽ピッpi |  QRコード</title>
   <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
   <link href="/static/css/flaskdb.css" rel="stylesheet">
   <!-- A Sample Web-DB Application for DB-DESIGN lecture -->
@@ -20,15 +20,15 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{{ url_for('app.index') }}">flaskdb</a>
+      <a class="navbar-brand" href="{{ url_for('app.index') }}">楽ピッpi</a>
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         {% if not "username" in session %}
-        <li><a href="{{ url_for('app.login_teacher') }}">Login_teacher</a></li>
+        <li><a href="{{ url_for('app.login_teacher') }}">教師ログイン</a></li>
         {% else %}
         <li><a href="{{ url_for('app.classes') }}">授業一覧</a></li>
-        <li><a href="{{ url_for('app.logout') }}">Logout</a></li>
+        <li><a href="{{ url_for('app.logout') }}">ログアウト</a></li>
         {% endif %}
       </ul>
     </div>
@@ -55,9 +55,12 @@
       {% endfor %}
     {% endfor %}
   {% endif %}
-
-    <img src="image/qr{{ contents }}.png" alt="写真" width="400" height="400">
-        <a id="link" href="QR_stop?id=jquery" _target="blank">終了</a>
+    <img src="image/qr{{ contents }}.png" alt="写真" width="400" height="400"style="display: block; margin: auto;">
+    <a id="link" href="QR_stop?id=jquery">
+      <button type="button" class="btn btn-primary btn-lg btn-block">
+        QRコードの公開を終了する
+      </button>
+    </a><br>
     <p>{{ date_start_time }}</p>
 </div>
 {% endblock %}

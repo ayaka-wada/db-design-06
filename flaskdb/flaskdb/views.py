@@ -116,7 +116,7 @@ def login_student():
             db.session.add(attend_students)
             db.session.commit()
         else:
-            flash("履修してないよん", "danger")
+            flash("履修していません", "danger")
             return redirect(url_for("app.login_student"))
 
         return redirect(url_for("app.index2"))
