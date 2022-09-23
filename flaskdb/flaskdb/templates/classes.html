@@ -62,10 +62,8 @@
       <tr>
         <th scope="col">ID</th>
         <th scope="col">NAME</th>
-        <th scope="col">Teacher ID</th>
         <th scope="col">Start Time</th>
         <th scope="col">End Time</th>
-        <th scope="col">Url</th>
       </tr>
     </thead>
     <tbody>
@@ -73,10 +71,8 @@
         <tr>
           <th scope="row">{{ s.classes_id }}</th>
           <td><a href="management?id={{ s.classes_id }}">{{ s.classname }}</a></td>
-          <td>{{ s.t_id }}</td>
           <td>{{ s.start_time }}</td>
           <td>{{ s.end_time }}</td>
-          <td>{{ s.url }}</td>
         </tr>
     {% endfor %}
     </tbody>

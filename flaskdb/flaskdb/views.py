@@ -16,7 +16,7 @@ app = Blueprint("app", __name__,static_folder='./static/image')
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("/index2.html")
+    return render_template("/index.html")
 
 @app.route("/initdb", methods=["GET", "POST"])
 def initdb():
@@ -36,9 +36,9 @@ def initdb():
     nakanishi = T_User(username="nakanishi", password="password")
 
     #授業のDB
-    db_design = Classes(classname ="データベースデザイン", t_id =1, start_time = "09:00", end_time = "12:30",url ="index")
-    mmkb = Classes(classname ="マルチメディア知識ベース", t_id =1, start_time = "08:50", end_time = "12:20",url ="index")
-    ai_creation = Classes(classname ="専門コース演習II", t_id =2, start_time = "13:10", end_time = "16:40",url ="index")
+    db_design = Classes(classname ="データベースデザイン", t_id =1, start_time = "09:00", end_time = "12:30")
+    mmkb = Classes(classname ="マルチメディア知識ベース", t_id =1, start_time = "08:50", end_time = "12:20")
+    ai_creation = Classes(classname ="専門コース演習II", t_id =2, start_time = "13:10", end_time = "16:40")
     
     #授業の日付のDB
     db_1 =  classes_date(classes_id=1, classes_number=1,date="2022-09-19")
@@ -192,60 +192,62 @@ def get_request():
         func.count(qr_start.classes_id==contents)
         ).first()[0]
     
-    if count_time > 0:
+    # if count_time > 0:
 
-        count_qr = db.session.query(
-            func.count(qr_start.classes_id == contents)
-            ).all()[0]
+    count_qr = db.session.query(
+        func.count(qr_start.classes_id == contents)
+        ).all()[0]
 
-        check = db.session.query(
-                qr_start.id,
-                qr_start.classes_id,
-                attend.students_id,
-                attend.date_time,
-                qr_start.qr_start_time,
-                qr_stop.qr_end_time,
-                qr_start.qr_start_date
-            ).filter(
-                qr_start.classes_id == attend.classes_id,
-                qr_start.id == qr_stop.id,
-                between(attend.date_time, qr_start.qr_start_time, qr_stop.qr_end_time)
-            ).all()
+    check = db.session.query(
+            qr_start.id,
+            qr_start.classes_id,
+            attend.students_id,
+            attend.date_time,
+            qr_start.qr_start_time,
+            qr_stop.qr_end_time,
+            qr_start.qr_start_date
+        ).filter(
+            qr_start.classes_id == attend.classes_id,
+            qr_start.id == qr_stop.id,
+            between(attend.date_time, qr_start.qr_start_time, qr_stop.qr_end_time)
+        ).all()
 
-        mikel = db.session.query(
-                attend.students_id,
-                qr_start.qr_start_date,
-                func.count(qr_start.qr_start_date)
-            ).filter(
-                qr_start.classes_id == attend.classes_id,
-                qr_start.id == qr_stop.id,
-                between(attend.date_time, qr_start.qr_start_time, qr_stop.qr_end_time),
-                qr_start.classes_id == contents
-            ).group_by(attend.students_id,qr_start.qr_start_date).all()
+    mikel = db.session.query(
+            attend.students_id,
+            qr_start.qr_start_date,
+            func.count(qr_start.qr_start_date)
+        ).filter(
+            qr_start.classes_id == attend.classes_id,
+            qr_start.id == qr_stop.id,
+            between(attend.date_time, qr_start.qr_start_time, qr_stop.qr_end_time),
+            qr_start.classes_id == contents
+        ).group_by(attend.students_id,qr_start.qr_start_date).all()
 
-        # qrコード押した回数知りたい
-        jackson = db.session.query(
-                classes_date.date,
-                func.count(classes_date.date)
-            ).filter(
-                qr_start.classes_id == contents,
-                classes_date.classes_id == contents,
-                qr_start.qr_start_date == classes_date.date
-            ).group_by(classes_date.date).all()
+    # qrコード押した回数知りたい
+    jackson = db.session.query(
+            classes_date.date,
+            func.count(classes_date.date)
+        ).filter(
+            qr_start.classes_id == contents,
+            classes_date.classes_id == contents,
+            qr_start.qr_start_date == classes_date.date
+        ).group_by(classes_date.date).all()
 
-        class_count = db.session.query(
-                classes_date.date
-            ).order_by(classes_date.classes_number)
+    class_count = db.session.query(
+            classes_date.date
+        ).order_by(classes_date.classes_number)
             
-    else:
-        count_qr = 0
+    # else:
+    #     count_qr = 0
     
     sky = []
     for p in range(len(mikel)):
         sky.append([mikel[p][0], mikel[p][1],mikel[p][2]])
-    # print("sssssssss", sky)
-    # print("jjjjjj", jackson)
-    # print("cccccc", class_count)
+    # class_count=0
+
+    print("sssssssss", sky)
+    print("jjjjjj", jackson)
+    print("cccccc", class_count.count())
     # print("mmmmmmmm", mikel)
     # print("student", students)
 
@@ -253,28 +255,30 @@ def get_request():
     for s in students:
         marubatu_list_one = []
         marubatu_list_one.append(s[0])
+        exit=0
         for h in range(7):
             if (class_count.count() -1) >= h:
                 list = [i for i, l in enumerate(sky) if set([int(s[0]), class_count[h][0]]).issubset(l)]
-                # print("lllllllll", list)
-                # print("lllllllll", int(s[0]))
-                # print("lllllllll", class_count[h][0])
+                print("lllll", list)
+                print("ssssss", int(s[0]))
+                print("cccccc", class_count[h][0])
                 if not list:
                     marubatu_list_one.append("×")
-                elif jackson[h][1] == sky[list[0]][2]:
+                    print("ばつ")
+                elif jackson[exit][1] == sky[list[0]][2]:
                     marubatu_list_one.append("○")
-                elif jackson[h][1] > sky[list[0]][2]:
+                    print("まる")
+                    exit += 1
+                elif jackson[exit][1] > sky[list[0]][2]:
                     marubatu_list_one.append("△")
+                    print("さんかく")
+                    exit += 1
             else:
                 marubatu_list_one.append("×")
-
-                
         marubatu_list.append(marubatu_list_one)
-        
     # print("mmmmmmmmmmmmmmmmm", marubatu_list)
     # print("mmmmmmmmmmmmmmmmm", mikel)
     # print("mmmmmmmmmmmmmmmmm", sky)
-    
     return render_template("management.html", management_list=management_list, students=students, contents=contents, count_qr=count_qr,mikel=mikel,jackson=jackson,class_count=class_count,marubatu_list=marubatu_list)
 
 @app.route('/QR_start',methods=['GET', 'POST'])

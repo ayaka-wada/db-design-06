@@ -50,7 +50,6 @@ class Classes(db.Model):
     t_id = db.Column(db.Integer, nullable=False)
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
-    url = db.Column(db.String(128), nullable=False)
 
     def __repr__(self):
         return "<Classes %r>" % self.classes_id

@@ -3,7 +3,7 @@
 {% block head %}
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>楽ピッpi | 案内画面</title>
+  <title>楽ピッpi | 出席</title>
   <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
   <link href="/static/css/flaskdb.css" rel="stylesheet">
   <!-- A Sample Web-DB Application for DB-DESIGN lecture -->
@@ -36,17 +36,7 @@
 
 {% block content %}
 <div class="container">
-  <div class="page-header"><h1>楽ピッpi</h1></div>
-    <a id="link" href="login_student?id=jquery">
-      <button type="button" class="btn btn-primary btn-lg btn-block">
-        生徒ログインはこちら
-      </button>
-    </a><br>
-    <a id="link" href="login_teacher?id=jquery">
-      <button type="button" class="btn btn-primary btn-lg btn-block">
-        教師ログインはこちら
-      </button>
-    </a><br>
+  <div class="page-header"><h1>楽ピッpi 出席</h1></div>
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
